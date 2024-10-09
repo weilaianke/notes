@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Files Viewer</title>
+</head>
+<body>
+    <h1>Markdown Files</h1>
+    <ul id="file-list"></ul>
+    <div id="markdown-content"></div>
+
+    <script>
+        // GitHub 用户名和仓库信息
+        const username = 'weilaianke';  // 替换为你的GitHub用户名
+        const repo = 'notes';          // 替换为你的仓库名
+        const directory = '';            // 目录，如果在根目录就留空
+        const apiUrl = `https://api.github.com/${username}/${repo}/contents/${directory}`;
+
+        // 获取文件列表
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(files => {
+                const fileList = document.getElementById('file-list');
+
+                // 过滤出 .md 文件
+                files.filter(file => file.name.endsWith('.md')).forEach(file => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.textContent = file.name;
+                    link.onclick = function() {
+                        // 点击时加载并显示 Markdown 文件内容
+                        fetch(file.download_url)
+                            .then(response => response.text())
+                            .then(markdown => {
+                                document.getElementById('markdown-content').innerHTML = `
+                                    <h2>${file.name}</h2>
+                                    <pre>${markdown}</pre>`;
+                            });
+                    };
+                    listItem.appendChild(link);
+                    fileList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching file list:', error));
+    </script>
+</body>
+</html>
