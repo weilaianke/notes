@@ -15,3 +15,15 @@ accessParams.put("accessToken", accessToken);
 );
 ```
 这个方法是通过restTemplate.exchange()方法来发送POST请求，并且将请求参数封装成一个HttpEntity对象，最后通过createHeaders()方法来设置请求头。
+##2.如何把信息放在header中
+```
+ServerHttpRequest.Builder mutate2 = request.mutate();
+mutate.header("accessToken", accessToken);
+```
+这里面放到是request.mutate()，然后通过header()方法来设置。
+```
+HttpHeaders headers = request.getHeaders();
+String accessToken = headers.getFirst("accessToken");
+```
+这里面是获取header里面的信息，通过getFirst()方法来获取。
+
